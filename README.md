@@ -113,9 +113,10 @@ Example response (200):
 ## License
 
 Triptimize is released under
-the `MIT License`.
+the [MIT License](https://github.com/BeastlyMC956/Triptimize/blob/master/LICENSE.md).
+
 ---
 
 ## Dependencies
 
-For a list of dependencies used in Triptimize, please refer to the `DEPENDENCIES.md` file.
+For a list of dependencies used in Triptimize, please refer to the [DEPENDENCIES.md](https://github.com/BeastlyMC956/Triptimize/blob/master/DEPENDENCIES.md) file.
