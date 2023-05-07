@@ -1,6 +1,5 @@
 package com.beastlymc.triptimize.security.config;
 
-import com.beastlymc.triptimize.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.beastlymc.triptimize.user.AccountRepository;
+
 /**
  * A configuration class for various settings in the application.
  */
@@ -21,16 +22,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
 
     /**
-     * Returns a UserDetailsService implementation that loads user details from the UserRepository.
+     * Returns a UserDetailsService implementation that loads user details from the AccountRepository.
      *
-     * @return a UserDetailsService that loads user details from the UserRepository
+     * @return a UserDetailsService that loads user details from the AccountRepository
      */
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
+        return username -> accountRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not Found"));
     }
 

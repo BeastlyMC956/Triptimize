@@ -1,10 +1,15 @@
 package com.beastlymc.triptimize.auth;
 
 import com.beastlymc.triptimize.security.JwtService;
+import com.beastlymc.triptimize.user.Account;
+import com.beastlymc.triptimize.user.AccountRepository;
 import com.beastlymc.triptimize.user.Role;
-import com.beastlymc.triptimize.user.User;
-import com.beastlymc.triptimize.user.UserRepository;
+import com.beastlymc.triptimize.user.profile.Location;
+import com.beastlymc.triptimize.user.profile.Profile;
+
 import java.sql.Date;
+import java.time.LocalDate;
+
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +24,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UserRepository repository;
+    private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -31,23 +36,35 @@ public class AuthenticationService {
      * @return an AuthenticationResponse object containing a JWT token for the registered user
      */
     public AuthenticationResponse register(@NotNull RegisterRequest request) {
-        var user = User.builder()
-            .username(request.getUsername())
+        var newLocation = Location.builder()
+            .country(request.getCountry())
+            .preferredCurrency(request.getPreferredCurrency())
+            .build();
+
+        var newProfile = Profile.builder()
             .firstName(request.getFirstName())
             .lastName(request.getLastName())
-            .email(request.getEmail())
-            .password(passwordEncoder.encode(request.getPassword()))
-            .role(Role.USER)
-            .country(request.getCountry())
-            .accountCreationDate(new Date(System.currentTimeMillis()))
             .dateOfBirth(request.getDateOfBirth())
             .travelPreferences(request.getTravelPreferences())
             .profilePicture(request.getProfilePicture())
-            .preferredCurrency(request.getPreferredCurrency())
-            .lastLoginDate(new Date(System.currentTimeMillis()))
+            .location(newLocation)
             .build();
-        repository.save(user);
-        var jwtToken = jwtService.generateToken(user);
+
+        var newAccount = Account.builder()
+            .email(request.getEmail())
+            .username(request.getUsername())
+            .password(passwordEncoder.encode(request.getPassword()))
+            .accountCreationDate(Date.valueOf(Long.toString(System.currentTimeMillis())))
+            .lastLoginDate(Date.valueOf(Long.toString(System.currentTimeMillis())))
+            .role(Role.USER)
+            .profile(newProfile)
+            .authoredItineraries(null)
+            .collaboratedItineraries(null)
+            .build();
+
+        accountRepository.save(newAccount);
+
+        var jwtToken = jwtService.generateToken(newAccount);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 
@@ -64,8 +81,11 @@ public class AuthenticationService {
                 request.getPassword()
             )
         );
-        var user = repository.findByEmail(request.getEmail()).orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+        var account = accountRepository.findByEmail(request.getEmail()).orElseThrow();
+
+        account.setLastLoginDate(Date.valueOf(Long.toString(System.currentTimeMillis())));
+
+        var jwtToken = jwtService.generateToken(account);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 }

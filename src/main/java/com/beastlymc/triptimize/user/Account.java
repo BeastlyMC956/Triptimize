@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.beastlymc.triptimize.itinerary.Itinerary;
 import com.beastlymc.triptimize.user.profile.Profile;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -36,6 +37,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "accounts")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Account implements UserDetails {
 
     /**

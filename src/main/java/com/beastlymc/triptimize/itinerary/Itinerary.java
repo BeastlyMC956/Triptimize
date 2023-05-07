@@ -1,12 +1,18 @@
 package com.beastlymc.triptimize.itinerary;
 
-import com.beastlymc.triptimize.user.User;
+import java.sql.Date;
+import java.util.List;
+import java.util.Set;
+
+import com.beastlymc.triptimize.user.Account;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -34,11 +40,21 @@ public class Itinerary {
     private Long id;
 
     /**
-     * The name of the itinerary.
+     * The author of the itinerary.
      */
     @ManyToOne
-    @JoinColumn(name = "owner_id")
-    private User owner;
+    @JoinColumn(name = "author_id")
+    private Account author;
+
+    /**
+     * The collaborators of the itinerary.
+     */
+    @ManyToMany
+    @JoinTable(
+        name = "collaborator_id",
+        joinColumns = @JoinColumn(name = "itinerary_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id"))  
+    private Set<Account> collaborators;
 
     /**
      * The name of the itinerary.
@@ -58,17 +74,17 @@ public class Itinerary {
     /**
      * The start date of the itinerary.
      */
-    private String startDate;
+    private Date startDate;
 
     /**
      * The end date of the itinerary.
      */
-    private String endDate;
+    private Date endDate;
 
     /**
      * The activities of the itinerary.
      */
-    private String activities;
+    private List<String> activities;
 
     /**
      * If the itinerary is public.

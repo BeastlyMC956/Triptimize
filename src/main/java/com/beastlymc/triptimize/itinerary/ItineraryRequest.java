@@ -1,6 +1,10 @@
 package com.beastlymc.triptimize.itinerary;
 
-import com.beastlymc.triptimize.user.User;
+import java.sql.Date;
+import java.util.List;
+import java.util.Set;
+
+import com.beastlymc.triptimize.user.Account;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,13 +20,24 @@ public class ItineraryRequest {
     /**
      * The name of the itinerary.
      */
-    private User owner;
+    private Integer ownerId;
 
+    /**
+     * The collaborators of the itinerary.
+     */
+    private Set<Account> collaborators;
+
+    
     /**
      * The name of the itinerary.
      */
     private String name;
-
+    
+    /**
+     * The location of the itinerary.
+     */
+    private String location;
+    
     /**
      * The description of the itinerary.
      */
@@ -31,17 +46,17 @@ public class ItineraryRequest {
     /**
      * The start date of the itinerary.
      */
-    private String startDate;
+    private Date startDate;
 
     /**
      * The end date of the itinerary.
      */
-    private String endDate;
+    private Date endDate;
 
     /**
      * The activities of the itinerary.
      */
-    private String activities;
+    private List<String> activities;
 
     /**
      * If the itinerary is public.
