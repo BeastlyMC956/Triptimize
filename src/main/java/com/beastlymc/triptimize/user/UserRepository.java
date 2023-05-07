@@ -11,6 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional(readOnly = true)
 public interface UserRepository extends JpaRepository<User, Integer> {
+    
+    /**
+     * Finds a user account by its id.
+     *
+     * @param id the id to search for
+     * @return an Optional containing the user account if found, or an empty Optional otherwise
+     */
+    Optional<User> findById(Long id);
+    
     /**
      * Finds a user account by its email address.
      *

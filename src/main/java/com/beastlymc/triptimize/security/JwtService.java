@@ -1,11 +1,11 @@
 package com.beastlymc.triptimize.security;
 
-import com.beastlymc.triptimize.config.Config;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +20,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class JwtService {
+
+    /**
+     * The signing key for the JWT tokens.
+     */
+    @Value("${SIGNING_KEY}")
+    private String key;
 
     /**
      * Extracts the username from a JWT token.
@@ -125,7 +131,7 @@ public class JwtService {
      * @throws IllegalStateException if the key is not found in the configuration file
      */
     private @NotNull Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(Config.get("SIGNING_KEY"));
+        byte[] keyBytes = Decoders.BASE64.decode(key);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
