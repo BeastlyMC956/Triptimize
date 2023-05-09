@@ -18,15 +18,9 @@ import lombok.NoArgsConstructor;
 public class ItineraryRequest {
     
     /**
-     * The name of the itinerary.
-     */
-    private Integer ownerId;
-
-    /**
      * The collaborators of the itinerary.
      */
     private Set<Account> collaborators;
-
     
     /**
      * The name of the itinerary.

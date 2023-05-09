@@ -1,6 +1,6 @@
 package com.beastlymc.triptimize.auth;
 
-import com.beastlymc.triptimize.util.Constants;
+import com.beastlymc.triptimize.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * A controller class for authentication-related endpoints in the API.
  */
 @RequiredArgsConstructor
-@RequestMapping(Constants.DEFAULT_API_PATH + "auth")
+@RequestMapping(Util.DEFAULT_API_PATH + "auth")
 @RestController
 public class AuthenticationController {
 
@@ -42,5 +42,4 @@ public class AuthenticationController {
         @RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(service.authenticate(request));
     }
-
 }

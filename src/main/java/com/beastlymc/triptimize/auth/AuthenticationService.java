@@ -6,9 +6,7 @@ import com.beastlymc.triptimize.user.AccountRepository;
 import com.beastlymc.triptimize.user.Role;
 import com.beastlymc.triptimize.user.profile.Location;
 import com.beastlymc.triptimize.user.profile.Profile;
-
-import java.sql.Date;
-import java.time.LocalDate;
+import com.beastlymc.triptimize.util.Util;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -54,8 +52,8 @@ public class AuthenticationService {
             .email(request.getEmail())
             .username(request.getUsername())
             .password(passwordEncoder.encode(request.getPassword()))
-            .accountCreationDate(Date.valueOf(Long.toString(System.currentTimeMillis())))
-            .lastLoginDate(Date.valueOf(Long.toString(System.currentTimeMillis())))
+            .accountCreationDate(Util.getCurrentSQLDate())
+            .lastLoginDate(Util.getCurrentSQLDate())
             .role(Role.USER)
             .profile(newProfile)
             .authoredItineraries(null)
@@ -83,7 +81,7 @@ public class AuthenticationService {
         );
         var account = accountRepository.findByEmail(request.getEmail()).orElseThrow();
 
-        account.setLastLoginDate(Date.valueOf(Long.toString(System.currentTimeMillis())));
+        account.setLastLoginDate(Util.getCurrentSQLDate());
 
         var jwtToken = jwtService.generateToken(account);
         return AuthenticationResponse.builder().token(jwtToken).build();
