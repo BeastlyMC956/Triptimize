@@ -1,9 +1,5 @@
-package com.beastlymc.triptimize.security.config;
+package com.beastlymc.triptimize.config;
 
-import com.beastlymc.triptimize.security.AuthenticationFilter;
-import com.beastlymc.triptimize.security.TriptimizePermissionEvaluator;
-import com.beastlymc.triptimize.util.Util;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
@@ -15,6 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.beastlymc.triptimize.security.AuthenticationFilter;
+import com.beastlymc.triptimize.security.TriptimizePermissionEvaluator;
+import com.beastlymc.triptimize.util.Util;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * A configuration class for security-related settings in the application.
@@ -45,7 +47,7 @@ public class SecurityConfig {
         http
             .csrf().disable()
             .authorizeHttpRequests()
-            .requestMatchers(Util.DEFAULT_API_PATH + "auth/**").permitAll()
+            .requestMatchers(Util.DEFAULT_API_PATH + "auth/**", Util.PUBLIC_API_PATH + "**").permitAll()
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -56,6 +58,13 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Configures the method security expression handler for the application.
+     *
+     * <p>The permission evaluator is set to the default permission evaluator for the application.</p>
+     *
+     * @return a MethodSecurityExpressionHandler object representing the configured expression handler
+     */
     @Bean
     public MethodSecurityExpressionHandler expressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();

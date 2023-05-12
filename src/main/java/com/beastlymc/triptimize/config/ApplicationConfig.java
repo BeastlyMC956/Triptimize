@@ -1,6 +1,5 @@
-package com.beastlymc.triptimize.security.config;
+package com.beastlymc.triptimize.config;
 
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.beastlymc.triptimize.user.AccountRepository;
+import com.beastlymc.triptimize.repository.AccountRepository;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * A configuration class for various settings in the application.

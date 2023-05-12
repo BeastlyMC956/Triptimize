@@ -1,13 +1,18 @@
-package com.beastlymc.triptimize.itinerary;
+package com.beastlymc.triptimize.service;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.beastlymc.triptimize.user.Account;
+import com.beastlymc.triptimize.dto.request.ItineraryRequest;
+import com.beastlymc.triptimize.model.Itinerary;
+import com.beastlymc.triptimize.model.account.Account;
+import com.beastlymc.triptimize.repository.AccountRepository;
+import com.beastlymc.triptimize.repository.ItineraryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +26,8 @@ public class ItineraryService {
     
     private final ItineraryRepository itineraryRepository;
 
+    private final AccountRepository accountRepository;
+
     /**
      * Finds an itinerary by its id.
      *
@@ -28,13 +35,7 @@ public class ItineraryService {
      * @return an Optional containing the itinerary if found, or an empty Optional otherwise
      */
     public Optional<Itinerary> findById(final Integer id) {
-        Optional<Itinerary> itinerary = itineraryRepository.findById(id);
-        
-        if(itinerary.isPresent()) {
-            return itinerary;
-        } else {
-            return Optional.empty();
-        }
+        return itineraryRepository.findById(id);
     }
 
     /**
@@ -47,12 +48,36 @@ public class ItineraryService {
     }
 
     /**
+     * Finds all itineraries by a user's id.
+     *
+     * @param userId the id of the user to search for
+     * @return a list of all itineraries by the user
+     */
+    public List<Itinerary> getItinerariesByUserId(Integer userId) {
+        return itineraryRepository.findByAuthorId(userId);
+    }
+
+    /**
+     * Finds all public itineraries by a user's id.
+     *
+     * @param userId the id of the user to search for
+     * @return a list of all public itineraries by the user
+     */
+    public List<Itinerary> getPublicItinerariesByUserId(Integer userId) {
+        List<Itinerary> itineraries = getItinerariesByUserId(userId);
+        System.out.println(itineraries);
+        return itineraries.stream().filter(itinerary -> itinerary.isPublic()).collect(Collectors.toList());
+    }
+
+    /**
      * Saves an itinerary.
      *
      * @param itinerary the itinerary to save
      * @return the saved itinerary
      */
-    public ResponseEntity<Itinerary> saveItinerary(final Account author, final ItineraryRequest request) {
+    public ResponseEntity<Itinerary> saveItinerary(final Integer accountId, final ItineraryRequest request) {
+        Account author = accountRepository.findById(accountId)
+        .orElseThrow(() -> new RuntimeException("Account not found with id " + accountId));
         Itinerary itinerary = Itinerary.builder()
         .author(author)
         .name(request.getName())
@@ -64,7 +89,9 @@ public class ItineraryService {
         .isPublic(request.isPublic())
         .build();
 
-        itineraryRepository.save(itinerary);
+        author.getAuthoredItineraries().add(itinerary);
+        
+        accountRepository.save(author);
 
         return ResponseEntity.ok(itinerary);
     }

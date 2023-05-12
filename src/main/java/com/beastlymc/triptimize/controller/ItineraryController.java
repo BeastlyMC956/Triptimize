@@ -1,4 +1,4 @@
-package com.beastlymc.triptimize.itinerary;
+package com.beastlymc.triptimize.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.beastlymc.triptimize.user.Account;
+import com.beastlymc.triptimize.dto.request.ItineraryRequest;
+import com.beastlymc.triptimize.model.Itinerary;
+import com.beastlymc.triptimize.model.account.Account;
+import com.beastlymc.triptimize.service.ItineraryService;
 import com.beastlymc.triptimize.util.Util;
 
 import lombok.RequiredArgsConstructor;
@@ -40,8 +43,8 @@ public class ItineraryController {
      *
      * @return a list of all itineraries
      */
-    @GetMapping("/find/all")
     @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
     public List<Itinerary> findAll() {
         return itineraryService.findAll();
     }
@@ -55,9 +58,9 @@ public class ItineraryController {
      * @param id the id of the itinerary to find
      * @return the itinerary with the given id
      */
-    @PreAuthorize("hasRole('ADMIN') or hasPermission(#id, 'Itinerary', 'read')")
-    @GetMapping("/find/{id}")
-    public ResponseEntity<Itinerary> findById(@PathVariable("id") Integer id) {
+    @PreAuthorize("hasRole('ADMIN') or hasPermission(#itineraryId, 'Itinerary', 'read')")
+    @GetMapping("{itineraryId}")
+    public ResponseEntity<Itinerary> findById(@PathVariable("itineraryId") Integer id) {
         Optional<Itinerary> itineraryOptional = itineraryService.findById(id);
 
         if (itineraryOptional.isPresent()) {
@@ -68,6 +71,21 @@ public class ItineraryController {
     }
 
     /**
+     * Finds all itineraries by a user's id.
+     * 
+     * You have to have 'read' permissions to find the itinerary, 
+     * or be an admin.
+     *
+     * @param userId the id of the user to search for
+     * @return a list of all itineraries by the user
+     */
+    @PreAuthorize("hasRole('ADMIN') or hasPermission(#userId, 'Account', 'read')")
+    @GetMapping("users/{userId}/itineraries")
+    public ResponseEntity<List<Itinerary>> getItinerariesByUserId(@PathVariable("userId") Integer userId) {
+        return ResponseEntity.ok(itineraryService.getItinerariesByUserId(userId));
+    }
+
+    /**
      * Saves an itinerary.
      * 
      * You have to be authenticated to save an itinerary.
@@ -75,10 +93,10 @@ public class ItineraryController {
      * @param itinerary the itinerary to save
      * @return the saved itinerary
      */
-    @PostMapping("/save")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @PostMapping()
     public ResponseEntity<Itinerary> saveItinerary(@RequestBody ItineraryRequest request, Authentication authentication) {
-        return itineraryService.saveItinerary((Account) authentication.getPrincipal(), request);
+        return itineraryService.saveItinerary(((Account) authentication.getPrincipal()).getId(), request);
     }
 
     /**
@@ -87,12 +105,12 @@ public class ItineraryController {
      * You have to have the 'delete' permissions to delete the itinerary, 
      * or be an admin.
      *
-     * @param id the id of the itinerary to delete
+     * @param itineraryId the id of the itinerary to delete
      */
-    @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasPermission(#id, 'Itinerary', 'delete')")
-    public void deleteById(@PathVariable("id") Integer id) {
-        itineraryService.deleteById(id);
+    @PreAuthorize("hasRole('ADMIN') or hasPermission(#itineraryId, 'Itinerary', 'delete')")
+    @DeleteMapping("{itineraryId}")
+    public void deleteById(@PathVariable("itineraryId") Integer itineraryId) {
+        itineraryService.deleteById(itineraryId);
     }
 
     /**
@@ -101,11 +119,11 @@ public class ItineraryController {
      * You have to have the 'write' permissions to update the itinerary,
      * or be an admin.
      *
-     * @param id the id of the itinerary to update
+     * @param itineraryId the id of the itinerary to update
      */
-    @PutMapping("/update/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasPermission(#id, 'Itinerary', 'write')")
-    public ResponseEntity<Itinerary> updateItinerary(@PathVariable("id") Integer id, @RequestBody ItineraryRequest request) {
-        return itineraryService.updateItinerary(id, request);
+    @PreAuthorize("hasRole('ADMIN') or hasPermission(#itineraryId, 'Itinerary', 'write')")
+    @PutMapping("{itineraryId}")
+    public ResponseEntity<Itinerary> updateItinerary(@PathVariable("itineraryId") Integer itineraryId, @RequestBody ItineraryRequest request) {
+        return itineraryService.updateItinerary(itineraryId, request);
     }
 }
