@@ -1,12 +1,18 @@
-package com.beastlymc.triptimize.auth;
+package com.beastlymc.triptimize.controller;
 
-import com.beastlymc.triptimize.util.Util;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.beastlymc.triptimize.dto.request.AuthenticationRequest;
+import com.beastlymc.triptimize.dto.request.RegisterRequest;
+import com.beastlymc.triptimize.dto.response.AuthenticationResponse;
+import com.beastlymc.triptimize.service.AuthenticationService;
+import com.beastlymc.triptimize.util.Util;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * A controller class for authentication-related endpoints in the API.

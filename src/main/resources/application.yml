@@ -14,3 +14,14 @@ spring:
     show_sql: true
   main:
     web-application-type: servlet
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+        security: DEBUG
+        data: DEBUG
+        jpa: DEBUG
+        hibernate: DEBUG
+        sql: DEBUG

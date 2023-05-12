@@ -1,4 +1,4 @@
-package com.beastlymc.triptimize.auth;
+package com.beastlymc.triptimize.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
