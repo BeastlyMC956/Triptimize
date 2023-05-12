@@ -1,4 +1,4 @@
-package com.beastlymc.triptimize.user.profile;
+package com.beastlymc.triptimize.model.account.profile;
 
 import java.sql.Date;
 

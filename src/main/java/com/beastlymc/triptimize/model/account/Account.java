@@ -1,17 +1,17 @@
-package com.beastlymc.triptimize.user;
+package com.beastlymc.triptimize.model.account;
 
 import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.beastlymc.triptimize.itinerary.Itinerary;
-import com.beastlymc.triptimize.user.profile.Profile;
+import com.beastlymc.triptimize.model.Itinerary;
+import com.beastlymc.triptimize.model.account.profile.Profile;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -22,7 +22,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -50,31 +49,37 @@ public class Account implements UserDetails {
     /**
      * The email address of this user.
      */
+    @Column(nullable = false, unique = true)
     private String email;
 
     /**
      * The username or display name of this user.
      */
+    @Column(nullable = false, unique = true)
     private String username;
 
     /**
      * The password of this user.
      */
+    @Column(nullable = false)
     private String password;
 
     /**
      * The date when this user account was created.
      */
+    @Column(nullable = true, updatable = false)
     private Date accountCreationDate;
 
     /**
      * The date when this user last logged in.
      */
+    @Column(nullable = true)
     private Date lastLoginDate;
 
     /**
      * The role of this user.
      */
+    @Column(nullable = true)
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -88,16 +93,9 @@ public class Account implements UserDetails {
     /**
      * The itineraries created by this user.
      */
+    @JsonManagedReference
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    @Column(nullable = true)
-    private Set<Itinerary> authoredItineraries;
-
-    /**
-     * The itineraries collaborated on by this user.
-     */
-    @ManyToMany(mappedBy = "collaborators", cascade = CascadeType.ALL)
-    @Column(nullable = true)
-    private Set<Itinerary> collaboratedItineraries;
+    private Collection<Itinerary> authoredItineraries;
 
     /**
      * Returns the authorities granted to the user.

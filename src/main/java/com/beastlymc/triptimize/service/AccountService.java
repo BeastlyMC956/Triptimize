@@ -1,8 +1,13 @@
-package com.beastlymc.triptimize.user;
+package com.beastlymc.triptimize.service;
+
+import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.beastlymc.triptimize.model.account.Account;
+import com.beastlymc.triptimize.repository.AccountRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -29,4 +34,15 @@ public class AccountService implements UserDetailsService {
             .orElseThrow(() -> new UsernameNotFoundException(String.format(email,
                 EMAIL_NOT_FOUND_MSG)));
     }
+
+    /**
+     * Finds an account by its id.
+     *
+     * @param id the id to search for
+     * @return an Optional containing the account if found, or an empty Optional otherwise
+     */
+    public Optional<Account> findById(final Integer id) {
+        return accountRepository.findById(id);
+    }
+
 }

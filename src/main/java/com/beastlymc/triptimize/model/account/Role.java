@@ -1,4 +1,4 @@
-package com.beastlymc.triptimize.user;
+package com.beastlymc.triptimize.model.account;
 
 /**
  * An enumeration representing the different roles a user can have.
@@ -6,6 +6,6 @@ package com.beastlymc.triptimize.user;
  * <p>Possible roles are USER and ADMIN.
  */
 public enum Role {
-    USER,
-    ADMIN
+    ROLE_USER,
+    ROLE_ADMIN
 }

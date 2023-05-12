@@ -1,19 +1,24 @@
-package com.beastlymc.triptimize.auth;
+package com.beastlymc.triptimize.service;
 
-import com.beastlymc.triptimize.security.JwtService;
-import com.beastlymc.triptimize.user.Account;
-import com.beastlymc.triptimize.user.AccountRepository;
-import com.beastlymc.triptimize.user.Role;
-import com.beastlymc.triptimize.user.profile.Location;
-import com.beastlymc.triptimize.user.profile.Profile;
-import com.beastlymc.triptimize.util.Util;
+import java.util.Collections;
 
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.beastlymc.triptimize.dto.request.AuthenticationRequest;
+import com.beastlymc.triptimize.dto.request.RegisterRequest;
+import com.beastlymc.triptimize.dto.response.AuthenticationResponse;
+import com.beastlymc.triptimize.model.account.Account;
+import com.beastlymc.triptimize.model.account.Role;
+import com.beastlymc.triptimize.model.account.profile.Location;
+import com.beastlymc.triptimize.model.account.profile.Profile;
+import com.beastlymc.triptimize.repository.AccountRepository;
+import com.beastlymc.triptimize.util.Util;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * A service class for authentication-related logic in the application.
@@ -54,10 +59,9 @@ public class AuthenticationService {
             .password(passwordEncoder.encode(request.getPassword()))
             .accountCreationDate(Util.getCurrentSQLDate())
             .lastLoginDate(Util.getCurrentSQLDate())
-            .role(Role.USER)
+            .role(Role.ROLE_USER)
             .profile(newProfile)
-            .authoredItineraries(null)
-            .collaboratedItineraries(null)
+            .authoredItineraries(Collections.emptySet())
             .build();
 
         accountRepository.save(newAccount);

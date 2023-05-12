@@ -1,10 +1,7 @@
-package com.beastlymc.triptimize.itinerary;
+package com.beastlymc.triptimize.dto.request;
 
 import java.sql.Date;
 import java.util.List;
-import java.util.Set;
-
-import com.beastlymc.triptimize.user.Account;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,11 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItineraryRequest {
-    
-    /**
-     * The collaborators of the itinerary.
-     */
-    private Set<Account> collaborators;
     
     /**
      * The name of the itinerary.

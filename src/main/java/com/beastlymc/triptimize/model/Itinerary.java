@@ -1,18 +1,16 @@
-package com.beastlymc.triptimize.itinerary;
+package com.beastlymc.triptimize.model;
 
 import java.sql.Date;
 import java.util.List;
-import java.util.Set;
 
-import com.beastlymc.triptimize.user.Account;
+import com.beastlymc.triptimize.model.account.Account;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -44,17 +42,8 @@ public class Itinerary {
      */
     @ManyToOne
     @JoinColumn(name = "author_id")
+    @JsonBackReference
     private Account author;
-
-    /**
-     * The collaborators of the itinerary.
-     */
-    @ManyToMany
-    @JoinTable(
-        name = "collaborator_id",
-        joinColumns = @JoinColumn(name = "itinerary_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id"))  
-    private Set<Account> collaborators;
 
     /**
      * The name of the itinerary.
