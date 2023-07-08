@@ -1,4 +1,4 @@
-package com.beastlymc.triptimize.auth;
+package com.beastlymc.triptimize.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,5 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthenticationResponse {
 
+    /**
+     * The JWT token.
+     */
     private String token;
 }

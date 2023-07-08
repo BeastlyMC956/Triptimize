@@ -23,90 +23,32 @@ The frontend of Triptimize is currently under development.
 
 ## Running
 
-1. Make sure to have/add the following environment file added ``database.env`` at the root of the
+1. Make sure to have/add the following environment file added `database.env` at the root of the
    project with the following properties:
-    * `POSTGRES_URL` (ex: `jdbc:postgresql://<IP>:<PORT>/user`)
     * `POSTGRES_USER`
     * `POSTGRES_PASSWORD`
-    * `POSTGRES_DB`
-    * `SIGNING_KEY`
+2. Add an `.env` environment file at the root of the `resources`, (so that the `.env` file is next to the `application.yml`) 
+   make sure to have the following variables present in the `.env` file:
+   * POSTGRES_URL (e.g. `jdbc:postgresql://<IP>:<PORT>/<MAIN_DATABASE_NAME>`)
+   * POSTGRES_USER
+   * POSTGRES_PASSWORD
+   * SIGNING_KEY
+   
+(Alternatively you can just replace the variables in `application.yml` & `docker-compose.yml` with their respective value)
 
-2. Open Docker and run `docker-compose up` in the terminal.
-3. Then proceed to launch the `TriptimizeApplication` (To successfully add environment variables to
-   the `application.yml`as of now) with the following environment variables:
-    * `POSTGRES_USER`
-    * `POSTGRES_PASSWORD`
-    * `POSTGRES_DB`
-    * `SIGNING_KEY`
-
-   Alternatively you can just replace the variables in `application.yml` with their respective
-   value.
-
+3. Open Docker and run `docker-compose up` in the terminal.
+   
+   a) You may need to create the main database here using the following commands
+     * `docker exec -it <container_name> bash`
+     * `psql -U <username>`
+     * `CREATE DATABASE <MAIN_DATABASE_NAME>;`
+4. Then proceed to launch the `TriptimizeApplication`
+   
 ---
 
-## HTML Requests
+## API
 
-The base template for HTML requests is `http://<IP>:<PORT>/api/v1`.
-
-Triptimize currently supports
-the following requests:
-
-## Posts
-
-### `*/auth/authenticate`
-
-This endpoint takes an `email` and a `password` in JSON format, and returns a new JWT token
-associated with the account. If the user details are incorrect the HTTP Status code will be
-a `403 Forbidden`
-
-Example request body:
-
-```json
-{
-  "email": "test123@gmail.com",
-  "password": "password123"
-}
-```
-
-Example response (200):
-
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MTIzQGdtYWlsLmNvbSIsImlhdCI6MTY4MzA4MDA1NCwiZXhwIjoxNjgzMDgxNDk0fQ.D4eKyTcyYc2fpOLEnA-EPqbNNGoDYDqZ3bRITzMrlZI"
-}
-```
-
-### `*/auth/register`
-
-This endpoint takes an `email`,
-a `username`, `firstName`, `lastName`, `password`, `dateOfBirth`, `country`,
-`preferredCurrency`, `travelPreferences` and `profilePicture` in JSON format, and returns a JWT
-token associated with the new account and returns a new JWT token associated with the new account.
-
-Example request body:
-
-```json
-{
-  "email": "test123@gmail.com",
-  "username": "testUsername",
-  "firstName": "testFirstname",
-  "lastName": "testLastname",
-  "password": "password123",
-  "dateOfBirth": "1335205592410",
-  "country": "USA",
-  "preferredCurrency": "USD",
-  "travelPreferences": "TBA",
-  "profilePicture": "url"
-}
-```
-
-Example response (200):
-
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MTIzQGdtYWlsLmNvbSIsImlhdCI6MTY4MzA4MDAzOSwiZXhwIjoxNjgzMDgxNDc5fQ.ksnSCQHfv5waDqUpxTAABOost7MuwKK7sXDOwRmTyE0"
-}
-```
+UNDER DEVELOPMENT FOR NOW
 
 ---
 

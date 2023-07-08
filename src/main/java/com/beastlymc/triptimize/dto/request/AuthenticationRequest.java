@@ -1,4 +1,4 @@
-package com.beastlymc.triptimize.auth;
+package com.beastlymc.triptimize.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationRequest {
-
+    
+    /**
+     * The email of the user.
+     */
     private String email;
+
+    /**
+     * The password of the user.
+     */
     private String password;
 }

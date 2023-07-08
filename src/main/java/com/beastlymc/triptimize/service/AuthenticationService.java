@@ -1,16 +1,24 @@
-package com.beastlymc.triptimize.auth;
+package com.beastlymc.triptimize.service;
 
-import com.beastlymc.triptimize.security.JwtService;
-import com.beastlymc.triptimize.user.Role;
-import com.beastlymc.triptimize.user.User;
-import com.beastlymc.triptimize.user.UserRepository;
-import java.sql.Date;
-import lombok.RequiredArgsConstructor;
+import java.util.Collections;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.beastlymc.triptimize.dto.request.AuthenticationRequest;
+import com.beastlymc.triptimize.dto.request.RegisterRequest;
+import com.beastlymc.triptimize.dto.response.AuthenticationResponse;
+import com.beastlymc.triptimize.model.account.Account;
+import com.beastlymc.triptimize.model.account.Role;
+import com.beastlymc.triptimize.model.account.profile.Location;
+import com.beastlymc.triptimize.model.account.profile.Profile;
+import com.beastlymc.triptimize.repository.AccountRepository;
+import com.beastlymc.triptimize.util.Util;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * A service class for authentication-related logic in the application.
@@ -19,7 +27,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UserRepository repository;
+    private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -31,23 +39,34 @@ public class AuthenticationService {
      * @return an AuthenticationResponse object containing a JWT token for the registered user
      */
     public AuthenticationResponse register(@NotNull RegisterRequest request) {
-        var user = User.builder()
-            .username(request.getUsername())
+        var newLocation = Location.builder()
+            .country(request.getCountry())
+            .preferredCurrency(request.getPreferredCurrency())
+            .build();
+
+        var newProfile = Profile.builder()
             .firstName(request.getFirstName())
             .lastName(request.getLastName())
-            .email(request.getEmail())
-            .password(passwordEncoder.encode(request.getPassword()))
-            .role(Role.USER)
-            .country(request.getCountry())
-            .accountCreationDate(new Date(System.currentTimeMillis()))
             .dateOfBirth(request.getDateOfBirth())
             .travelPreferences(request.getTravelPreferences())
             .profilePicture(request.getProfilePicture())
-            .preferredCurrency(request.getPreferredCurrency())
-            .lastLoginDate(new Date(System.currentTimeMillis()))
+            .location(newLocation)
             .build();
-        repository.save(user);
-        var jwtToken = jwtService.generateToken(user);
+
+        var newAccount = Account.builder()
+            .email(request.getEmail())
+            .username(request.getUsername())
+            .password(passwordEncoder.encode(request.getPassword()))
+            .accountCreationDate(Util.getCurrentSQLDate())
+            .lastLoginDate(Util.getCurrentSQLDate())
+            .role(Role.ROLE_USER)
+            .profile(newProfile)
+            .authoredItineraries(Collections.emptySet())
+            .build();
+
+        accountRepository.save(newAccount);
+
+        var jwtToken = jwtService.generateToken(newAccount);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 
@@ -64,8 +83,11 @@ public class AuthenticationService {
                 request.getPassword()
             )
         );
-        var user = repository.findByEmail(request.getEmail()).orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+        var account = accountRepository.findByEmail(request.getEmail()).orElseThrow();
+
+        account.setLastLoginDate(Util.getCurrentSQLDate());
+
+        var jwtToken = jwtService.generateToken(account);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 }
