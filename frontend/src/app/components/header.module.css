@@ -1,0 +1,13 @@
+.container {
+    display: none;
+}
+@media (max-width: 999px) {
+    .smallMenu {
+      /* Styles for screens under 1000px */
+      display: block;
+    }
+
+    .smallContainer {
+        display: none;
+    }
+  }

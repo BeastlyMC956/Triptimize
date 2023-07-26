@@ -1,4 +1,4 @@
-# Dependencies
+# Backend Dependencies
 
 | Library                        | Version | Description                                                                                                                           | License                                                                        |
 |--------------------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
@@ -17,3 +17,17 @@
 | PostgreSQL JDBC Driver         | 42.5.4  | PostgreSQL JDBC Driver Postgresql                                                                                                     | [BSD-2-Clause](https://jdbc.postgresql.org/about/license.html)                 |
 | Project Lombok                 | 1.18.26 | Spice up your java: Automatic Resource Management, automatic generation of getters, setters, equals, hashCode and toString, and more! | [MIT License](https://projectlombok.org/LICENSE)                               |
 | JetBrains Java Annotations     | 24.0.1  | A set of annotations used for code inspection support and code documentation.                                                         | [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt) |
+
+# Frontend Dependencies
+| Library           | Version | Description                                                                                                                           | License                                                                                      |
+|-------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| TypeScript        | 5.1.6   | TypeScript is a strongly typed programming language that builds on JavaScript                                                         | [Apache License, Version 2.0](https://github.com/microsoft/TypeScript/blob/main/LICENSE.txt) |
+| React             | 18.2.0  | React lets you build both web apps and native apps using the same skills.                                                             | [MIT License](https://github.com/facebook/react/blob/main/LICENSE)                           |
+| react-dom         | 18.2.0  | The react-dom package provides DOM-specific methods that can be used at the top level of your app                                     | [MIT License](https://github.com/motorcycle/react-dom/blob/master/LICENSE.md)                |
+| Next.js           | 13.4.9  | Next.js provides additional structure, features, and optimizations for your application.                                              | [MIT License](https://github.com/vercel/next.js/blob/canary/license.md)                      |
+| ESLint            | 8.44.0  | ESLint statically analyzes your code to quickly find problems.                                                                        | [MIT License](https://github.com/eslint/eslint/blob/main/LICENSE)                            |
+| PostCSS           | 8.4.25  | PostCSS plugin to parse CSS and add vendor prefixes to CSS rules using values from [Can I Use](https://caniuse.com).                  | [MIT License](https://github.com/postcss/postcss/blob/main/LICENSE)                          |
+| Autoprefixer      | 10.4.14 | Autoprefixer will use the data based on current browser popularity and property support to apply prefixes for you.                    | [MIT License](https://github.com/postcss/autoprefixer/blob/main/LICENSE)                     |
+| tailwindcss       | 3.3.2   | A utility-first CSS framework packed with classes that can be composed to build any design, directly in your markup.                  | [MIT License](https://github.com/tailwindlabs/tailwindcss/blob/master/LICENSE)               |
+| @types/react      | 18.2.14 | Type definitions for React                                                                                                            | [MIT License](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/LICENSE)        |
+| @types/react-dom  | 18.2.6  | Type definitions for react-dom                                                                                                        | [MIT License](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/LICENSE)        |
