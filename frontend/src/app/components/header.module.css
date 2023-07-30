@@ -1,13 +1,18 @@
-.container {
+/* Smaller Screens ( < 1000px )*/
+.header img {
+    display: block;
+}
+
+.header.wideNav {
     display: none;
 }
-@media (max-width: 999px) {
-    .smallMenu {
-      /* Styles for screens under 1000px */
-      display: block;
-    }
 
-    .smallContainer {
+/* Wider Screen ( > 999px )*/
+@media (min-width: 999px) {
+    .header img {
         display: none;
     }
-  }
+    .header.wideNav {
+        display: block;
+    }
+}

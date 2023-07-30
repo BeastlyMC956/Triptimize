@@ -1,0 +1,16 @@
+.slidingMenu {
+    width: 32rem;
+    height: 100%;
+    background-color: #242424;
+    color: white;
+    position: absolute;
+    transition: transform 0.5s ease-in-out;
+    transform: translateX(-100%);
+    z-index: 1
+}
+
+@media (max-width: 32rem) {
+    .slidingMenu {
+        width: 100%;
+    }
+}
