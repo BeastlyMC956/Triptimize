@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Link from 'next/link';
 import styles from './header.module.css';
 import Menu from './menu'
+import Nav from './nav'
 
 const Header = () => {
   
@@ -11,9 +12,7 @@ const Header = () => {
       <Menu />
 
       {/* Wider Screen */}
-      <nav className='wideNav'>
-
-      </nav>
+      <Nav />
 
     </header>
     )

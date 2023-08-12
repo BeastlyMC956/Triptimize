@@ -8,7 +8,7 @@ import MenuIcon from '../../../public/menu_icon.png'
 const linkStyle = 'flex justify-center items-center w-full h-full border-b-4 border-zinc-800';
 
 const Menu = () => {
-  const [showMenu , setShowMenu ] = useState(true);
+  const [ showMenu , setShowMenu ] = useState(true);
 
   const handleMenu = () => {
     setShowMenu(!showMenu);
@@ -17,7 +17,7 @@ const Menu = () => {
   return (
     <div>
       <button type='button' onClick={handleMenu} className='w-16 h-16 absolute cursor-pointer'>
-        <img src={MenuIcon.src} />
+        <img id='smallMenu' src={MenuIcon.src} />
       </button>
 
       <div className={`${styles.slidingMenu} flex flex-col`} style={{ transform: !showMenu ? 'translateX(0)' : '' }}>
