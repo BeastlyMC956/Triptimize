@@ -7,7 +7,7 @@ import Nav from './nav'
 const Header = () => {
   
   return (
-    <header className={`${styles.header} h-16`}>
+    <header className={`${styles.header} h-20`}>
       {/* Smaller Screens */}
       <Menu />
 

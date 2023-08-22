@@ -15,7 +15,7 @@ const Menu = () => {
   }
 
   return (
-    <div>
+    <div className='lg:hidden'>
       <button type='button' onClick={handleMenu} className='w-16 h-16 absolute cursor-pointer'>
         <img id='smallMenu' src={MenuIcon.src} />
       </button>
@@ -26,7 +26,7 @@ const Menu = () => {
         </div>
         
         <nav className='w-full h-5/6 flex flex-col justify-around'>
-          <Link href='/' className={linkStyle}>Home</Link>
+          <Link href='/' onClick={handleMenu} className={linkStyle}>Home</Link>
           <Link href='/' className={linkStyle}>Travel</Link>
           <Link href='/' className={linkStyle}>Contact</Link>
           <Link href='/' className={linkStyle}>Blog</Link>
