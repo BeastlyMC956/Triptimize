@@ -14,14 +14,17 @@ const Menu = () => {
   }
 
   return (
-    <div className='lg:hidden w-32 h-full flex items-center justify-center'>
-      <button type='button' onClick={handleMenu} className='w-12 h-12 absolute cursor-pointer'>
-        <img id='smallMenu' src={`${IMAGE_PATH}menu_icon.png`} />
+    <div className='lg:hidden w-full xs:w-32 h-full flex items-center justify-around xs:justify-between xs:ml-12'>
+      <button type='button' onClick={handleMenu} className='w-12 h-12 cursor-pointer'>
+        <img src={`${IMAGE_PATH}menu_icon.png`} alt='Sliding Menu Button' id='smallMenu' />
       </button>
+      <Link href='/' className='w-12' title='Home'>
+        <img src={`${IMAGE_PATH}icon.png`} alt='Triptimize Logo' className='w-12'/>
+      </Link>
 
       <div className={`${styles.slidingMenu} flex flex-col top-0 left-0`} style={{ transform: !showMenu ? 'translateX(0)' : '' }}>
         <div className='w-full flex justify-center'>
-          <img src={`${IMAGE_PATH}dark_icon.png`} />
+          <img src={`${IMAGE_PATH}dark_icon.png`} alt='Triptimize Type' />
         </div>
         
         <nav className='w-full h-5/6 flex flex-col justify-around'>

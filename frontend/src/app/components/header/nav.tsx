@@ -9,7 +9,7 @@ const Nav = () => {
     <nav className='hidden h-full justify-between lg:flex'>
       <div id='leftSideNav' className='flex w-4/5'>
         <div className='flex items-center justify-center w-32'>
-          <Link href='/'>
+          <Link href='/' title='Home'>
             <img src={`${IMAGE_PATH}icon.png`} className='w-12'/>
           </Link>
         </div>
