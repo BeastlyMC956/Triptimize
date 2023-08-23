@@ -2,10 +2,9 @@
 import React, { useState } from 'react'
 import Link from 'next/link';
 import styles from './menu.module.css';
-import Icon from '../../../public/dark_icon.png'
-import MenuIcon from '../../../public/menu_icon.png'
+import { IMAGE_PATH } from '@/app/util/constants';
 
-const linkStyle = 'flex justify-center items-center w-full h-full border-b-4 border-zinc-800';
+const linkStyle = 'flex justify-center items-center w-full h-screen border-b-4 border-zinc-800';
 
 const Menu = () => {
   const [ showMenu , setShowMenu ] = useState(true);
@@ -15,14 +14,14 @@ const Menu = () => {
   }
 
   return (
-    <div className='lg:hidden'>
-      <button type='button' onClick={handleMenu} className='w-16 h-16 absolute cursor-pointer'>
-        <img id='smallMenu' src={MenuIcon.src} />
+    <div className='lg:hidden w-32 h-full flex items-center justify-center'>
+      <button type='button' onClick={handleMenu} className='w-12 h-12 absolute cursor-pointer'>
+        <img id='smallMenu' src={`${IMAGE_PATH}menu_icon.png`} />
       </button>
 
-      <div className={`${styles.slidingMenu} flex flex-col`} style={{ transform: !showMenu ? 'translateX(0)' : '' }}>
+      <div className={`${styles.slidingMenu} flex flex-col top-0 left-0`} style={{ transform: !showMenu ? 'translateX(0)' : '' }}>
         <div className='w-full flex justify-center'>
-          <img src={Icon.src} />
+          <img src={`${IMAGE_PATH}dark_icon.png`} />
         </div>
         
         <nav className='w-full h-5/6 flex flex-col justify-around'>
@@ -36,8 +35,6 @@ const Menu = () => {
           <button onClick={handleMenu} className='h-full w-full'>CLOSE</button>
         </div>
       </div>
-
-      
     </div>
   )
 }

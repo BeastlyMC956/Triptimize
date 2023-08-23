@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import Icon from '../../../public/icon.png'
+import { IMAGE_PATH } from '@/app/util/constants';
 
 const navListStyle = 'p-4 m-2';
 
@@ -8,9 +8,9 @@ const Nav = () => {
   return (
     <nav className='hidden h-full justify-between lg:flex'>
       <div id='leftSideNav' className='flex w-4/5'>
-        <div className='flex items-center justify-end w-32'>
+        <div className='flex items-center justify-center w-32'>
           <Link href='/'>
-            <img src={Icon.src} className='w-12'/>
+            <img src={`${IMAGE_PATH}icon.png`} className='w-12'/>
           </Link>
         </div>
         
