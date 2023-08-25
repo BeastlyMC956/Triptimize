@@ -71,10 +71,11 @@ public class AuthenticationService {
     }
 
     /**
-     * Authenticates a user in the system and generates a JWT token for them.
+     * Authenticates a user with the given credentials and generates a JWT token for them.
      *
-     * @param request an AuthenticationRequest object representing the user's credentials
-     * @return an AuthenticationResponse object containing a JWT token for the authenticated user
+     * @param request  an AuthenticationRequest object representing the user's credentials
+     * @param response the HttpServletResponse object to add the JWT token to
+     * @return a ResponseEntity object representing the result of the authentication attempt
      */
     public ResponseEntity<?> authenticate(@NotNull AuthenticationRequest request,
         HttpServletResponse response) {
@@ -89,8 +90,10 @@ public class AuthenticationService {
         account.setLastLoginDate(Util.getCurrentSQLDate());
 
         var jwtToken = jwtService.generateToken(account);
+        final int ONE_WEEK = 60 * 60 * 24 * 7;
+
         Cookie jwtCookie = new Cookie("token", jwtToken);
-        jwtCookie.setMaxAge(60 * 60 * 24 * 7);
+        jwtCookie.setMaxAge(ONE_WEEK);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setPath("/");
 

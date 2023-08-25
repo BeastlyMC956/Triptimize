@@ -1,21 +1,19 @@
 package com.beastlymc.triptimize.service;
 
-import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 /**
  * A service for handling JWT authentication tokens.
@@ -57,11 +55,12 @@ public class JwtService {
      * @return the generated JWT token
      */
     public String generateToken(Map<String, Object> extraClaims, @NotNull UserDetails userDetails) {
+        final Date aWeekFromNow = new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7);
         return Jwts.builder()
             .setClaims(extraClaims)
             .setSubject(userDetails.getUsername())
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new java.util.Date(System.currentTimeMillis() + 1000 * 60 * 24))
+            .setExpiration(aWeekFromNow)
             .signWith(getSigningKey(), SignatureAlgorithm.HS256)
             .compact();
     }

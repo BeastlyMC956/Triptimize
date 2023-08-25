@@ -68,8 +68,8 @@ public class SecurityConfig {
      * <p>The permission evaluator is set to the default permission evaluator for the
      * application.</p>
      *
-     * @return a MethodSecurityExpressionHandler object representing the configured expression
-     * handler
+     * @return a {@link MethodSecurityExpressionHandler} object representing the configured
+     * expression handler
      */
     @Bean
     public MethodSecurityExpressionHandler expressionHandler() {
@@ -78,6 +78,19 @@ public class SecurityConfig {
         return expressionHandler;
     }
 
+    /**
+     * Configures CORS for the application.
+     * <p>
+     * The allowed origins are set to localhost:3000. The allowed methods are set to GET, POST, PUT,
+     * and DELETE. The allowed headers are set to Content-Type. Credentials are allowed. The
+     * configuration is applied to all paths.
+     * </p>
+     *
+     * @return a {@link CorsConfigurationSource} object representing the configured CORS
+     * configuration
+     * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">Cross-Origin Resource
+     * Sharing (CORS)</a>
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

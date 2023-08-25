@@ -37,8 +37,11 @@ public class AuthenticationController {
 
     /**
      * Authenticates a user with the system.
+     * <p> If the authentication is successful, a JWT token is generated for the user and returned
+     * in the response.
      *
-     * @param request an AuthenticationRequest object representing the user's credentials
+     * @param request  an AuthenticationRequest object representing the user's credentials
+     * @param response the HttpServletResponse object for the request
      * @return a ResponseEntity containing an AuthenticationResponse object with a JWT token for the
      * authenticated user
      */
