@@ -34,7 +34,7 @@ const Nav = () => {
       </div>
 
       <div className='flex items-center w-32'>
-        <Link href='/'>Login {'>'}</Link>
+        <Link href='/login'>Login {'>'}</Link>
       </div>
     </nav>
   )

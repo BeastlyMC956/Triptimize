@@ -1,5 +1,5 @@
 import Header from "./components/header/header"
-import FrontPage from "./components/pages/front"
+import FrontPage from "./components/site/front"
 
 export default function Home() {
   return (
