@@ -1,13 +1,5 @@
 package com.beastlymc.triptimize.service;
 
-import java.util.Collections;
-
-import org.jetbrains.annotations.NotNull;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.beastlymc.triptimize.dto.request.AuthenticationRequest;
 import com.beastlymc.triptimize.dto.request.RegisterRequest;
 import com.beastlymc.triptimize.dto.response.AuthenticationResponse;
@@ -17,8 +9,16 @@ import com.beastlymc.triptimize.model.account.profile.Location;
 import com.beastlymc.triptimize.model.account.profile.Profile;
 import com.beastlymc.triptimize.repository.AccountRepository;
 import com.beastlymc.triptimize.util.Util;
-
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 /**
  * A service class for authentication-related logic in the application.
@@ -71,12 +71,14 @@ public class AuthenticationService {
     }
 
     /**
-     * Authenticates a user in the system and generates a JWT token for them.
+     * Authenticates a user with the given credentials and generates a JWT token for them.
      *
-     * @param request an AuthenticationRequest object representing the user's credentials
-     * @return an AuthenticationResponse object containing a JWT token for the authenticated user
+     * @param request  an AuthenticationRequest object representing the user's credentials
+     * @param response the HttpServletResponse object to add the JWT token to
+     * @return a ResponseEntity object representing the result of the authentication attempt
      */
-    public AuthenticationResponse authenticate(@NotNull AuthenticationRequest request) {
+    public ResponseEntity<?> authenticate(@NotNull AuthenticationRequest request,
+        HttpServletResponse response) {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
@@ -88,6 +90,15 @@ public class AuthenticationService {
         account.setLastLoginDate(Util.getCurrentSQLDate());
 
         var jwtToken = jwtService.generateToken(account);
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        final int ONE_WEEK = 60 * 60 * 24 * 7;
+
+        Cookie jwtCookie = new Cookie("token", jwtToken);
+        jwtCookie.setMaxAge(ONE_WEEK);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setPath("/");
+
+        response.addCookie(jwtCookie);
+
+        return ResponseEntity.ok().build();
     }
 }

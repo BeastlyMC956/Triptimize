@@ -17,7 +17,8 @@ More things are coming!
 
 ### Frontend
 
-The frontend of Triptimize is currently under development.
+The frontend of Triptimize is currently under development however, current development is using Next.js 
+as the selected framework with TypeScript.
 
 ---
 

@@ -1,0 +1,25 @@
+/* Smaller Screens ( < 1000px )*/
+#bigMenu {
+    display: none;
+}
+
+#smallMenu {
+    display: block;
+}
+
+.header.wideNav {
+    display: none;
+}
+
+/* Wider Screen ( > 999px )*/
+@media (min-width: 999px) {
+    #bigMenu {
+        display: block;
+    }
+    #smallMenu {
+        display: none;
+    }
+    .header.wideNav {
+        display: block;
+    }
+}
