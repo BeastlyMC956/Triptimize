@@ -22,6 +22,9 @@ module.exports = {
       'sm': '512px',
       // => @media (min-width: 640px) { ... }
 
+      'md': '784px',
+      // => @media (min-width: 640px) { ... }
+
       'lg': '1024px',
       // => @media (min-width: 1024px) { ... }
 
@@ -31,8 +34,8 @@ module.exports = {
       '2xl': '1444px',
       // => @media (min-width: 1444px) { ... }
 
-      '3xl': '1828px',
-      // => @media (min-width: 1444px) { ... }
+      '3xl': '1680px',
+      // => @media (min-width: 1828px) { ... }
     },
   },
   plugins: [],

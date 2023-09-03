@@ -20,8 +20,8 @@ const FrontPage = () => {
             </div>
 
             <div id='buttons' className='h-1/6 w-full text-center text-black flex justify-center xl:justify-evenly items-center flex-col xl:flex-row'>
-              <LinkComponent size='md' href='itinerary' metadata={{text: 'Create a Itinerary', backgroundColor: 'bg-amber-600', textColor: 'text-white', hover: undefined}} />
-              <LinkComponent size='md' href='/' metadata={{text: 'Community Itineraries', backgroundColor: 'bg-white', textColor: 'text-black', hover: undefined}} />
+              <LinkComponent href='/' metadata={{text: 'Create a Itinerary', decoration:{backgroundColor: 'bg-amber-600', textColor: 'text-white'}}} />
+              <LinkComponent href='/' metadata={{text: 'Community Itineraries', decoration:{}}} />
             </div>
           </div>
 
