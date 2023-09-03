@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +36,23 @@ public class JwtService {
      */
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    /**
+     * Generates a http only cookie with the given token.
+     *
+     * @param token the token to generate the cookie with
+     * @return the generated cookie
+     */
+    public Cookie generateCookie(String token) {
+        final int ONE_WEEK = 60 * 60 * 24 * 7;
+        Cookie jwtCookie = new Cookie("token", token);
+
+        jwtCookie.setMaxAge(ONE_WEEK);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setPath("/");
+
+        return jwtCookie;
     }
 
     /**
