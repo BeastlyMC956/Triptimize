@@ -5,17 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * A response object containing a JWT token for authenticated users.
- */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
+public class PublicAccountResponse {
 
-    /**
-     * The JWT token.
-     */
-    private String token;
+    private Integer id;
+    private String username;
+
 }

@@ -1,12 +1,11 @@
 package com.beastlymc.triptimize.repository;
 
+import com.beastlymc.triptimize.model.account.Account;
+import com.beastlymc.triptimize.model.account.Verification;
 import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.beastlymc.triptimize.model.account.Account;
 
 @Repository
 @Transactional(readOnly = true)
@@ -27,4 +26,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
      * @return an Optional containing the user account if found, or an empty Optional otherwise
      */
     Optional<Account> findByEmail(String email);
+
+    Optional<Account> findByVerification(Verification verification);
 }

@@ -1,12 +1,16 @@
 package com.beastlymc.triptimize.controller;
 
+import com.beastlymc.triptimize.constants.AuthenticationConstants;
 import com.beastlymc.triptimize.dto.request.AuthenticationRequest;
 import com.beastlymc.triptimize.dto.request.RegisterRequest;
-import com.beastlymc.triptimize.dto.response.AuthenticationResponse;
+import com.beastlymc.triptimize.model.account.Account;
+import com.beastlymc.triptimize.service.AccountService;
 import com.beastlymc.triptimize.service.AuthenticationService;
 import com.beastlymc.triptimize.util.Util;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthenticationController {
 
-    private final AuthenticationService service;
+    private final AuthenticationService authenticationService;
+    private final AccountService accountService;
 
     /**
      * Registers a new user with the system.
@@ -31,8 +36,20 @@ public class AuthenticationController {
      * registered user
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(service.register(request));
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        Optional<Account> accountRequest = accountService.loadUser(request.getEmail(),
+            request.getUsername());
+        if (accountRequest.isPresent()) {
+            String conflict = accountRequest.get().getEmail().equals(request.getEmail())
+                ? AuthenticationConstants.MESSAGE_EMAIL_ALREADY_IN_USE
+                : AuthenticationConstants.MESSAGE_USERNAME_ALREADY_IN_USE;
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(conflict);
+        }
+
+        accountService.sendVerificationEmail(request.getEmail());
+
+        return authenticationService.register(request);
     }
 
     /**
@@ -48,6 +65,6 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(
         @RequestBody AuthenticationRequest request, HttpServletResponse response) {
-        return service.authenticate(request, response);
+        return authenticationService.authenticate(request, response);
     }
 }
