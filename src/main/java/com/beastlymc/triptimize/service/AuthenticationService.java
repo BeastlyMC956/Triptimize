@@ -1,19 +1,21 @@
 package com.beastlymc.triptimize.service;
 
+import static com.beastlymc.triptimize.constants.AuthenticationConstants.MESSAGE_ACCOUNT_LOCKED;
+import static com.beastlymc.triptimize.constants.AuthenticationConstants.MESSAGE_ACCOUNT_NOT_VERIFIED;
+import static com.beastlymc.triptimize.constants.AuthenticationConstants.MESSAGE_EMAIL_NOT_FOUND;
+import static com.beastlymc.triptimize.constants.AuthenticationConstants.MESSAGE_PASSWORD_INCORRECT;
+
 import com.beastlymc.triptimize.dto.request.AuthenticationRequest;
 import com.beastlymc.triptimize.dto.request.RegisterRequest;
-import com.beastlymc.triptimize.dto.response.AuthenticationResponse;
 import com.beastlymc.triptimize.model.account.Account;
+import com.beastlymc.triptimize.model.account.Profile;
 import com.beastlymc.triptimize.model.account.Role;
-import com.beastlymc.triptimize.model.account.profile.Location;
-import com.beastlymc.triptimize.model.account.profile.Profile;
 import com.beastlymc.triptimize.repository.AccountRepository;
 import com.beastlymc.triptimize.util.Util;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
     private final AccountRepository accountRepository;
+    private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -38,36 +41,22 @@ public class AuthenticationService {
      * @param request a RegisterRequest object representing the details of the user to register
      * @return an AuthenticationResponse object containing a JWT token for the registered user
      */
-    public AuthenticationResponse register(@NotNull RegisterRequest request) {
-        var newLocation = Location.builder()
-            .country(request.getCountry())
-            .preferredCurrency(request.getPreferredCurrency())
-            .build();
-
-        var newProfile = Profile.builder()
-            .firstName(request.getFirstName())
-            .lastName(request.getLastName())
-            .dateOfBirth(request.getDateOfBirth())
-            .travelPreferences(request.getTravelPreferences())
-            .profilePicture(request.getProfilePicture())
-            .location(newLocation)
-            .build();
+    public ResponseEntity<?> register(@NotNull RegisterRequest request) {
+        var newProfile = Profile.builder().username(request.getUsername()).build();
+        var verification = accountService.sendVerificationEmail(request.getEmail());
 
         var newAccount = Account.builder()
             .email(request.getEmail())
-            .username(request.getUsername())
             .password(passwordEncoder.encode(request.getPassword()))
-            .accountCreationDate(Util.getCurrentSQLDate())
-            .lastLoginDate(Util.getCurrentSQLDate())
             .role(Role.ROLE_USER)
+            .accountCreationDate(Util.getCurrentSQLDate())
             .profile(newProfile)
-            .authoredItineraries(Collections.emptySet())
+            .verification(verification)
             .build();
 
         accountRepository.save(newAccount);
 
-        var jwtToken = jwtService.generateToken(newAccount);
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -78,26 +67,41 @@ public class AuthenticationService {
      * @return a ResponseEntity object representing the result of the authentication attempt
      */
     public ResponseEntity<?> authenticate(@NotNull AuthenticationRequest request,
-        HttpServletResponse response) {
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
-                request.getPassword()
-            )
+        @NotNull HttpServletResponse response) {
+        var account = accountRepository.findByEmail(request.getEmail());
+
+        if (account.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(MESSAGE_EMAIL_NOT_FOUND);
+        }
+
+        var authentication = new UsernamePasswordAuthenticationToken(
+            request.getEmail(),
+            request.getPassword()
         );
-        var account = accountRepository.findByEmail(request.getEmail()).orElseThrow();
 
-        account.setLastLoginDate(Util.getCurrentSQLDate());
+        if (!request.getPassword().equals(authentication.getCredentials().toString())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(MESSAGE_PASSWORD_INCORRECT);
+        }
 
-        var jwtToken = jwtService.generateToken(account);
-        final int ONE_WEEK = 60 * 60 * 24 * 7;
+        var emailAccount = account.get();
 
-        Cookie jwtCookie = new Cookie("token", jwtToken);
-        jwtCookie.setMaxAge(ONE_WEEK);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setPath("/");
+        if (emailAccount.isLocked()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(MESSAGE_ACCOUNT_LOCKED);
+        } else if (!emailAccount.isVerified()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(MESSAGE_ACCOUNT_NOT_VERIFIED);
+        }
 
-        response.addCookie(jwtCookie);
+        authenticationManager.authenticate(authentication);
+
+        emailAccount.setLastLoginDate(Util.getCurrentSQLDate());
+        accountRepository.save(emailAccount);
+
+        var jwtToken = jwtService.generateToken(emailAccount);
+        response.addCookie(jwtService.generateCookie(jwtToken));
 
         return ResponseEntity.ok().build();
     }

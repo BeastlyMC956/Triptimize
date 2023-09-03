@@ -1,11 +1,7 @@
 package com.beastlymc.triptimize.model;
 
-import java.sql.Date;
-import java.util.List;
-
-import com.beastlymc.triptimize.model.account.Account;
+import com.beastlymc.triptimize.model.account.Profile;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.sql.Date;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "itinerary")
 public class Itinerary {
-    
+
     /**
      * The id of the itinerary.
      */
@@ -43,7 +41,7 @@ public class Itinerary {
     @ManyToOne
     @JoinColumn(name = "author_id")
     @JsonBackReference
-    private Account author;
+    private Profile author;
 
     /**
      * The name of the itinerary.
@@ -79,5 +77,5 @@ public class Itinerary {
      * If the itinerary is public.
      */
     private boolean isPublic;
-    
+
 }

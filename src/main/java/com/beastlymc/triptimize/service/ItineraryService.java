@@ -1,20 +1,17 @@
 package com.beastlymc.triptimize.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.beastlymc.triptimize.dto.request.ItineraryRequest;
 import com.beastlymc.triptimize.model.Itinerary;
 import com.beastlymc.triptimize.model.account.Account;
 import com.beastlymc.triptimize.repository.AccountRepository;
 import com.beastlymc.triptimize.repository.ItineraryRepository;
-
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service for {@link Itinerary} objects.
@@ -23,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @Service
 public class ItineraryService {
-    
+
     private final ItineraryRepository itineraryRepository;
 
     private final AccountRepository accountRepository;
@@ -66,31 +63,34 @@ public class ItineraryService {
     public List<Itinerary> getPublicItinerariesByUserId(Integer userId) {
         List<Itinerary> itineraries = getItinerariesByUserId(userId);
         System.out.println(itineraries);
-        return itineraries.stream().filter(itinerary -> itinerary.isPublic()).collect(Collectors.toList());
+        return itineraries.stream().filter(itinerary -> itinerary.isPublic())
+            .collect(Collectors.toList());
     }
 
     /**
      * Saves an itinerary.
      *
-     * @param itinerary the itinerary to save
+     * @param accountId the itinerary to save
+     * @param request   the itinerary to save
      * @return the saved itinerary
      */
-    public ResponseEntity<Itinerary> saveItinerary(final Integer accountId, final ItineraryRequest request) {
+    public ResponseEntity<Itinerary> saveItinerary(final Integer accountId,
+        final ItineraryRequest request) {
         Account author = accountRepository.findById(accountId)
-        .orElseThrow(() -> new RuntimeException("Account not found with id " + accountId));
+            .orElseThrow(() -> new RuntimeException("Account not found with id " + accountId));
         Itinerary itinerary = Itinerary.builder()
-        .author(author)
-        .name(request.getName())
-        .location(request.getLocation())
-        .description(request.getDescription())
-        .startDate(request.getStartDate())
-        .endDate(request.getEndDate())
-        .activities(request.getActivities())
-        .isPublic(request.isPublic())
-        .build();
+            .author(author.getProfile())
+            .name(request.getName())
+            .location(request.getLocation())
+            .description(request.getDescription())
+            .startDate(request.getStartDate())
+            .endDate(request.getEndDate())
+            .activities(request.getActivities())
+            .isPublic(request.isPublic())
+            .build();
 
-        author.getAuthoredItineraries().add(itinerary);
-        
+        author.getProfile().getItineraries().add(itinerary);
+
         accountRepository.save(author);
 
         return ResponseEntity.ok(itinerary);
@@ -103,7 +103,7 @@ public class ItineraryService {
      */
     public ResponseEntity<Integer> deleteById(Integer id) {
         // Check if the itinerary exists
-        if(!itineraryRepository.existsById(id)) {
+        if (!itineraryRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
 
@@ -114,10 +114,12 @@ public class ItineraryService {
     /**
      * Updates an itinerary.
      *
-     * @param itinerary the itinerary to update
+     * @param id      the id of the itinerary to update
+     * @param request the itinerary to update
      * @return the updated itinerary
      */
-    public ResponseEntity<Itinerary> updateItinerary(final Integer id, final ItineraryRequest request) {
+    public ResponseEntity<Itinerary> updateItinerary(final Integer id,
+        final ItineraryRequest request) {
         Optional<Itinerary> itinerary = itineraryRepository.findById(id);
 
         // Check if the itinerary exists
@@ -140,5 +142,5 @@ public class ItineraryService {
 
         return ResponseEntity.ok(updatedItinerary);
     }
-    
+
 }

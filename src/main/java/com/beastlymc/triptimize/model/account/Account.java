@@ -1,18 +1,5 @@
 package com.beastlymc.triptimize.model.account;
 
-import java.sql.Date;
-import java.util.Collection;
-import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import com.beastlymc.triptimize.model.Itinerary;
-import com.beastlymc.triptimize.model.account.profile.Profile;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,21 +9,34 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+/**
+ * <h1>Account Table</h1>
+ * The account of a user.
+ * <p>
+ * This table stores private information about a user. such as their email, password, role, and
+ * profile.
+ * </p>
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
 @Table(name = "accounts")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Account implements UserDetails {
 
     /**
@@ -53,49 +53,44 @@ public class Account implements UserDetails {
     private String email;
 
     /**
-     * The username or display name of this user.
-     */
-    @Column(nullable = false, unique = true)
-    private String username;
-
-    /**
      * The password of this user.
      */
     @Column(nullable = false)
     private String password;
 
     /**
-     * The date when this user account was created.
+     * The role of this user.
      */
-    @Column(nullable = true, updatable = false)
-    private Date accountCreationDate;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     /**
      * The date when this user last logged in.
      */
-    @Column(nullable = true)
-    private Date lastLoginDate;
+    private Timestamp lastLoginDate;
 
     /**
-     * The role of this user.
+     * The date when this user account was created.
      */
-    @Column(nullable = true)
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @Column(updatable = false)
+    private Timestamp accountCreationDate;
 
     /**
      * The profile of this user.
      */
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", referencedColumnName = "id", nullable = false)
     private Profile profile;
 
-    /**
-     * The itineraries created by this user.
-     */
-    @JsonManagedReference
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    private Collection<Itinerary> authoredItineraries;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "verification_id", referencedColumnName = "id")
+    private Verification verification;
+
+    @ColumnDefault("false")
+    private boolean locked;
+
+    @ColumnDefault("false")
+    private boolean verified;
 
     /**
      * Returns the authorities granted to the user.
@@ -111,7 +106,7 @@ public class Account implements UserDetails {
     }
 
     /**
-     * Returns the username used to authenticate the user.
+     * Returns the email used to authenticate the user.
      *
      * <p>In this case, it returns the user's email address.</p>
      *
@@ -119,7 +114,7 @@ public class Account implements UserDetails {
      */
     @Override
     public String getUsername() {
-        return email;
+        return profile.getUsername();
     }
 
     @Override
@@ -129,7 +124,7 @@ public class Account implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isLocked();
     }
 
     @Override
@@ -139,6 +134,6 @@ public class Account implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isVerified();
     }
 }
