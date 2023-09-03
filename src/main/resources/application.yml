@@ -11,17 +11,20 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    show_sql: true
+    show_sql: false
   main:
     web-application-type: servlet
+  quartz:
+    job-store-type: memory
 
 logging:
   level:
     org:
       springframework:
-        web: DEBUG
-        security: DEBUG
-        data: DEBUG
-        jpa: DEBUG
-        hibernate: DEBUG
-        sql: DEBUG
+        web: error
+        security: error
+        data: error
+        jpa: error
+      hibernate:
+        type: error
+      quartz: error
